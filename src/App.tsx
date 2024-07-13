@@ -1,14 +1,32 @@
-import React from 'react';
-import Authorization from "./Pages/Authorization/Authorization";
-import SearchPage from "./Pages/Search/SearchPage";
+import React, {useEffect} from "react";
+import {Outlet, useNavigate} from "react-router-dom";
+import {useAppDispatch, useAppSelector} from "./hooks/hooks";
+import {login} from "./redux/slices/loginSlice";
+
 
 function App() {
-  return (
-    <div className="bg-customGray min-h-screen">
-      {/*<Authorization/>*/}
-        <SearchPage/>
-    </div>
-  );
+
+    const {isAuthenticated} = useAppSelector(state => state.login);
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if(token) {
+            dispatch(login())
+        }
+    }, [dispatch, token]);
+
+    useEffect(() => {
+        isAuthenticated ? navigate('/search') : navigate('/authorization');
+    }, [isAuthenticated, navigate]);
+
+    return (
+        <div className="bg-customGray min-h-screen">
+            <Outlet/>
+        </div>
+    );
 }
 
 export default App;
