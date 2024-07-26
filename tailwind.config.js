@@ -9,6 +9,7 @@ module.exports = {
       labelText: 'rgba(23, 23, 25, 0.3)',
       inputActiveBg: 'rgba(197, 228, 249, 0.3)',
       headerText: '#1390E5',
+      descriptionResult: 'rgba(23, 23, 25, 0.3)',
     },
     extend: {},
   },

@@ -13,13 +13,13 @@ function App() {
     const token = localStorage.getItem("token");
 
     useEffect(() => {
-        if(token) {
+        if (token) {
             dispatch(login())
         }
     }, [dispatch, token]);
 
     useEffect(() => {
-        isAuthenticated ? navigate('/search') : navigate('/authorization');
+        isAuthenticated ? navigate('/search/default') : navigate('/authorization');
     }, [isAuthenticated, navigate]);
 
     return (

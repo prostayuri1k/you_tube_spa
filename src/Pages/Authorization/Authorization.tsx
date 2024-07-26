@@ -1,18 +1,20 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import logo from '../../image/Authorization/logo.svg'
 import {Button, Input} from "antd";
-import {EyeInvisibleOutlined, EyeTwoTone} from "@ant-design/icons";
+import {EyeInvisibleOutlined, EyeTwoTone, LoadingOutlined} from "@ant-design/icons";
 import {SubmitHandler, useForm, Controller} from "react-hook-form";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import InputErrorMessage from "../../Components/InputErrorMessage";
 import {loginUser} from "../../redux/slices/loginSlice";
-import {useAppDispatch} from "../../hooks/hooks";
+import {useAppDispatch, useAppSelector} from "../../hooks/hooks";
+import {Bounce, toast, ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Authorization: FC = () => {
 
     const schema = yup.object({
-        email: yup.string().email('enter valid email').required('Обязательное поле'),
+        email: yup.string().email('Укажите корректный email (example@example.com)').required('Обязательное поле'),
         password: yup
             .string()
             .required('Обязательное поле')
@@ -31,12 +33,31 @@ const Authorization: FC = () => {
 
     const dispatch = useAppDispatch();
 
+    const {status, error} = useAppSelector(state => state.login);
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error, {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+        }
+    }, [error]);
+
     const onSubmit: SubmitHandler<FormData> = (data: FormData) => {
         dispatch(loginUser(data));
     };
 
     return (
         <div className="h-screen flex flex-col justify-center">
+            <ToastContainer/>
             <div
                 className="w-1/3 bg-white mx-auto border border-customBlack rounded text-center flex flex-col justify-center py-10 px-20">
                 <div className="mx-auto text-center mb-7">
@@ -76,7 +97,7 @@ const Authorization: FC = () => {
                     </div>
                     <Button htmlType={"submit"} className={'mx-auto w-1/2 text-xl py-5'} type={"primary"}>
                         {
-                            'Войти'
+                            status === 'loading' ? <LoadingOutlined/> : 'Войти'
                         }
                     </Button>
                 </form>

@@ -12,17 +12,12 @@ const initialState = {
 
 export const loginUser = createAppAsyncThunk<string, NewUser>(
     'loginSlice/loginUser',
-    async (data, thunkAPI) => {
-        const {rejectWithValue} = thunkAPI;
-        try {
-            const {token} = await usersAPI.loginUser(data).then(res => res.data);
-            return token;
-        } catch (e) {
-            const error = e as {message: string};
-            return rejectWithValue(error.message);
-        }
+    async (data, {rejectWithValue}) => {
+        return await usersAPI.loginUser(data)
+            .then(res => res.data.token)
+            .catch(err => rejectWithValue(err.response.data.message));
     }
-)
+);
 
 
 const loginSlice = createSlice({
